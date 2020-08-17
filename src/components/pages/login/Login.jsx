@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
-import './Login.scss';
 import axios from 'axios';
+import {
+  Box,
+  FormControl,
+  Input,
+  FormLabel,
+  Button,
+  Link,
+  useToast,
+  Image,
+  Grid,
+  Text,
+} from '@chakra-ui/core';
 
-function Login({ changeMessage, changeShowview, changeUser }) {
+function Login({ setShowview, setUser }) {
   const [usuario, setUsuario] = useState({
     email: '',
     password: '',
   });
 
+  // funciones
   const handleChange = (e) => {
     setUsuario({
       ...usuario,
@@ -18,66 +30,111 @@ function Login({ changeMessage, changeShowview, changeUser }) {
   const loguearUsuario = async (e) => {
     e.preventDefault();
     try {
-      const url = 'https://academlo-todolist.herokuapp.com/login';
+      const url = '/login';
       const res = await axios.post(url, usuario);
       const data = res.data;
-      console.log(res);
-      const mensaje = {
-        type: 'success',
-        message: data.results,
-      };
-      changeMessage(mensaje);
-      changeUser(data.results);
-      changeShowview('task');
+      getToast('success', res.data.message);
+      setUser(data.results);
+      setShowview('task');
     } catch (err) {
       console.log(err);
-      const mensaje = {
-        type: 'error',
-        message: 'verifica tu email y tu contraseña',
-      };
-      changeMessage(mensaje);
+      let error = 'los datos ingresados son icorrectos';
+      getToast('warning', error);
     }
   };
 
   const changePage = () => {
-    changeShowview('register');
+    setShowview('register');
   };
-
+  const toast = useToast();
+  const getToast = (type, message) => {
+    toast({
+      position: 'top-right',
+      description: message,
+      status: type,
+      duration: 3000,
+      isClosable: true,
+    });
+  };
   const { email, password } = usuario;
   return (
-    <div className='card-box'>
-      <div className='row'>
-        <div className='p-0 col-md-4 card-image'></div>
-        <div className='p-0 col-md-8'>
-          <div className=''>
-            <form onSubmit={loguearUsuario}>
-              <input
-                className='form-contro'
-                name='email'
-                onChange={handleChange}
-                placeholder='email'
-                type='email'
-                value={email}
-              />
-              <input
-                className='form-contro'
-                name='password'
-                onChange={handleChange}
-                placeholder='contraseña'
-                type='password'
-                value={password}
-              />
-              <button type='submit' className=''>
-                ingresar
-              </button>
-              <button className='' onClick={changePage}>
-                registrate
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Grid
+      templateColumns={['1fr', '1fr', '3fr 2fr']}
+      backgroundColor='#006064'
+      mx={2}
+      borderRadius='lg'
+      overflow='hidden'
+      minWidth='100%'
+    >
+      <Box>
+        <Image
+          size='full'
+          objectFit='cover'
+          src='https://placeimg.com/680/340/tech/grayscale'
+        />
+      </Box>
+      <Box>
+        <Text
+          letterSpacing='wide'
+          fontFamily='Poppins'
+          textAlign='center'
+          fontSize='xl'
+          color='teal.100'
+          pt={2}
+        >
+          INICIAR SESIÓN
+        </Text>
+
+        <Box color='#CFD8DC' as='form' onSubmit={loguearUsuario} px={4} py={4}>
+          <FormControl>
+            <FormLabel htmlFor='email'>usuario:</FormLabel>
+            <Input
+              color='#263238'
+              type='email'
+              id='email'
+              placeholder='ingresa tu email'
+              name='email'
+              onChange={handleChange}
+              value={email}
+              mb={2}
+              focusBorderColor='teal.400'
+              isRequired
+            />
+            <FormLabel htmlFor='password'>contraseña:</FormLabel>
+            <Input
+              id='password'
+              color='#263238'
+              type='password'
+              placeholder='ingresa tu contraseña'
+              name='password'
+              onChange={handleChange}
+              value={password}
+              mb={2}
+              focusBorderColor='teal.400'
+              isRequired
+            />
+            <Button
+              type='submit'
+              color='whatsapp.100'
+              rightIcon='check'
+              variantColor='whatsapp'
+              letterSpacing='wider'
+              my={2}
+              width='full'
+            >
+              Ingresar
+            </Button>
+            <Box textAlign='center'>
+              si no tienes una cuenta (
+              <Link color='whatsapp.500' onClick={changePage}>
+                REGISTRATE
+              </Link>
+              )
+            </Box>
+          </FormControl>
+        </Box>
+      </Box>
+    </Grid>
   );
 }
 
