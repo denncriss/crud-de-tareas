@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EditTask from './EditTask';
-import moment from 'moment';
+import TaskFilter from './TaskFilter';
 import {
   Grid,
-  IconButton,
   Box,
   Input,
   Text,
@@ -29,6 +28,7 @@ function Task({ user }) {
 
   useEffect(() => {
     getTask();
+    console.log('antes');
   }, []);
 
   const getTask = async () => {
@@ -92,9 +92,7 @@ function Task({ user }) {
       [e.target.name]: e.target.value,
     });
   };
-  //
-  //
-  //
+  //editar
   const deleteTask = async (id) => {
     try {
       let url = `/tasks/${id}`;
@@ -205,52 +203,10 @@ function Task({ user }) {
             </Box>
           )}
         </Box>
+        <Box></Box>
       </Box>
       <Box backgroundColor='gray.500' py={1} borderRadius='lg'>
-        {tasks.map((task) => (
-          <Grid
-            key={task._id}
-            templateColumns='3fr 1fr'
-            backgroundColor='gray.200'
-            m={2}
-            p={2}
-            borderRadius='lg'
-          >
-            <Box
-              display='flex'
-              flexDirection={['column', 'row']}
-              justifyContent='space-between'
-            >
-              <Text fontFamily='Poppins'>{task.content}</Text>
-              <Input
-                size='sm'
-                type='date'
-                width={48}
-                textAlign={['left', 'right']}
-                variant='flushed'
-                defaultValue={moment(task.date).format('YYYY-MM-DD')}
-                isReadOnly
-              />
-            </Box>
-            <Box display='flex' justifyContent='flex-end' alignItems='center'>
-              <IconButton
-                onClick={() => editTask(task._id)}
-                aria-label='icon'
-                icon='edit'
-                variantColor='green'
-                size='sm'
-              />
-              <IconButton
-                onClick={() => deleteTask(task._id)}
-                aria-label='icon'
-                icon='delete'
-                variantColor='red'
-                size='sm'
-                ml={3}
-              />
-            </Box>
-          </Grid>
-        ))}
+        <TaskFilter tasks={tasks} deleteTask={deleteTask} editTask={editTask} />
       </Box>
     </Grid>
   );

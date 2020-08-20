@@ -70,7 +70,7 @@ function Login({ setShowview, setUser }) {
         <Image
           size='full'
           objectFit='cover'
-          src='https://placeimg.com/680/340/tech/grayscale'
+          src='https://placeimg.com/680/340/tech'
         />
       </Box>
       <Box>
